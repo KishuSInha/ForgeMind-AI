@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForgeMind AI — Login</title>
+</head>
+<body class="auth-body">
+
+  <div class="auth-bg">
+    <canvas id="auth-canvas"></canvas>
+  </div>
+
+  <div class="auth-wrapper">
+
+    <!-- Left brand panel -->
+    <div class="auth-brand">
+      <a href="/" class="auth-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">ForgeMind <span class="logo-ai">AI</span></span>
+      </a>
+      <h2 class="auth-headline">Industrial Operating System for the Factory Floor</h2>
+      <p class="auth-sub">Machine Memory · World Model · Decision Intelligence</p>
+      <div class="auth-features">
+        <div class="auth-feat"><span class="af-icon">🧠</span><div><strong>Machine Memory</strong><p>153 learning cycles per asset</p></div></div>
+        <div class="auth-feat"><span class="af-icon">🌐</span><div><strong>World Model</strong><p>94% physics prediction accuracy</p></div></div>
+        <div class="auth-feat"><span class="af-icon">⚡</span><div><strong>Decision Intelligence</strong><p>58ms · ₹21,400 avg. savings</p></div></div>
+        <div class="auth-feat"><span class="af-icon">📡</span><div><strong>Edge Native</strong><p>No cloud · Air-gap ready</p></div></div>
+      </div>
+      <div class="auth-badge">🏆 Tata Innovent Hackathon 2026</div>
+    </div>
+
+    <!-- Right login form -->
+    <div class="auth-form-panel glass-card">
+      <div class="auth-form-header">
+        <h3>Welcome back</h3>
+        <p>Sign in to your ForgeMind workspace</p>
+      </div>
+
+      <div id="login-error" class="auth-error" style="display:none"></div>
+
+      <form id="login-form" class="auth-form" autocomplete="off">
+        <div class="form-group">
+          <label for="email">Work Email</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉</span>
+            <input type="email" id="email" name="email" placeholder="rahul.sharma@tatamotors.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required />
+            <button type="button" id="toggle-pw" class="pw-toggle" aria-label="Show password">👁</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="checkbox-label"><input type="checkbox" id="remember" /> Remember me</label>
+          <a href="#" class="form-link">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+          <span id="login-btn-text">Sign In to Platform</span>
+          <span id="login-spinner" class="spinner" style="display:none"></span>
+        </button>
+      </form>
+
+      <div class="auth-divider"><span>or use demo credentials</span></div>
+
+      <div class="demo-creds">
+        <div class="demo-cred-item" data-email="rahul.sharma@tatamotors.com" data-pass="ForgeMind2026">
+          <div class="dc-role">Plant Engineer</div>
+          <div class="dc-info">rahul.sharma@tatamotors.com · ForgeMind2026</div>
+        </div>
+        <div class="demo-cred-item" data-email="admin@forgemind.ai" data-pass="Admin@123">
+          <div class="dc-role">Admin</div>
+          <div class="dc-info">admin@forgemind.ai · Admin@123</div>
+        </div>
+      </div>
+
+      <p class="auth-footer-note">
+        &copy; 2026 ForgeMind AI · <a href="/">Back to website</a>
+      </p>
+    </div>
+
+  </div>
+
+  <script type="module" src="/src/pages/login.js"></script>
+</body>
+</html>

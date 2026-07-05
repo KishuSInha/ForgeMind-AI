@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForgeMind AI — Platform</title>
+</head>
+<body class="dash-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">ForgeMind <span class="logo-ai">AI</span></span>
+      </a>
+      <div class="sidebar-plant">Tata Motors · Pune Plant</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Operations</div>
+      <a href="#" class="sidebar-link active" data-view="factory">
+        <span class="sl-icon">🏭</span><span class="sl-text">Factory Command Center</span>
+        <span class="sl-badge sl-badge-red" id="badge-alerts">3</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="machines">
+        <span class="sl-icon">⚙️</span><span class="sl-text">Machine Intelligence</span>
+      </a>
+
+      <div class="nav-group-label">AI Engine</div>
+      <a href="#" class="sidebar-link" data-view="memory">
+        <span class="sl-icon">🧠</span><span class="sl-text">Machine Memory</span>
+        <span class="sl-tag">★</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="worldmodel">
+        <span class="sl-icon">🌐</span><span class="sl-text">Industrial World Model</span>
+        <span class="sl-tag">★★</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="decisions">
+        <span class="sl-icon">⚡</span><span class="sl-text">Decision Intelligence</span>
+        <span class="sl-tag">★★★</span>
+        <span class="sl-badge sl-badge-orange" id="badge-decisions">1</span>
+      </a>
+
+      <div class="nav-group-label">Analytics</div>
+      <a href="#" class="sidebar-link" data-view="fleet">
+        <span class="sl-icon">🔗</span><span class="sl-text">Fleet Learning</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="explainai">
+        <span class="sl-icon">📊</span><span class="sl-text">Explainable AI</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="copilot">
+        <span class="sl-icon">💬</span><span class="sl-text">Engineering Copilot</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user" id="sidebar-user">
+        <div class="user-avatar" id="user-avatar">RS</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Rahul Sharma</div>
+          <div class="user-role" id="user-role">Plant Engineer</div>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout-btn" title="Sign out">⏻</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="dash-main" id="dash-main">
+
+    <!-- Top bar -->
+    <header class="dash-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <div class="topbar-breadcrumb">
+          <span id="topbar-title">Factory Command Center</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-machine-select">
+          <span class="tms-label">Active Machine:</span>
+          <select id="machine-select" class="machine-select-input">
+            <option value="CNC-07">CNC-07 · Line 3</option>
+          </select>
+        </div>
+        <div class="topbar-phase">
+          <span class="tp-label">Phase:</span>
+          <select id="phase-select" class="phase-select-input">
+            <option value="1">Phase 1 · Healthy (09:00)</option>
+            <option value="2">Phase 2 · Early Degradation (09:30)</option>
+            <option value="3">Phase 3 · Bearing Wear (10:00)</option>
+            <option value="4">Phase 4 · World Model (10:30)</option>
+            <option value="5" selected>Phase 5 · Decision Intelligence (11:00)</option>
+            <option value="6">Phase 6 · Recovery (11:45)</option>
+          </select>
+        </div>
+        <div class="topbar-live">
+          <span class="live-dot"></span><span class="live-text">LIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- View container -->
+    <div class="dash-content" id="dash-content">
+      <!-- Views injected by JS -->
+    </div>
+
+  </main>
+
+  <script type="module" src="/src/pages/dashboard.js"></script>
+</body>
+</html>
