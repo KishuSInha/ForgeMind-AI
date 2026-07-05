@@ -11,7 +11,7 @@ import {
 const router = Router();
 
 // Server-side phase state (shared — we re-export a setter)
-let _currentPhaseIndex = 4;
+let _currentPhaseIndex = 0;
 export function setPhaseIndex(idx) { _currentPhaseIndex = idx; }
 
 // Helper: classify a sensor reading against thresholds
@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
     threshold_critical: THRESHOLDS[key]?.critical ?? null,
   }));
   res.json({
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     phase: phase.phase,
     timestamp: phase.timestamp,
     readings,
@@ -51,7 +51,7 @@ router.get('/', (req, res) => {
 // GET /api/sensors/history — all 6 phase snapshots as time-series
 router.get('/history', (req, res) => {
   res.json({
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     series: SENSOR_HISTORY,
     sensor_keys: Object.keys(DEMO_PHASES[0].sensors),
   });

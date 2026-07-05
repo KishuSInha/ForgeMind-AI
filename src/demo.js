@@ -1,6 +1,6 @@
 /**
  * demo.js — ForgeMind AI Live Demo Dashboard
- * Connects to Express backend, renders the full Tata Motors CNC-07 story
+ * Connects to Express backend, renders the full Tata Motors CNC-01 story
  * Injected into the page by main.js after DOMContentLoaded
  */
 import { gsap } from 'gsap';
@@ -14,7 +14,7 @@ const STATUS_LABEL = { ok: 'HEALTHY', warning: 'WARNING', critical: 'CRITICAL', 
 const SENSOR_CONFIG = {
   temperature:    { label: 'Temperature',    icon: '🌡️', max: 100 },
   vibration:      { label: 'Vibration RMS',  icon: '📳', max: 8   },
-  current:        { label: 'Motor Current',  icon: '⚡', max: 18  },
+  current:        { label: 'Motor Load',     icon: '⚡', max: 100 },
   rpm:            { label: 'Spindle RPM',    icon: '🔄', max: 1600 },
   bearing_health: { label: 'Bearing Health', icon: '⚙️', max: 100 },
   lubrication:    { label: 'Lubrication',    icon: '💧', max: 100 },
@@ -28,7 +28,7 @@ function buildDemoHTML() {
   <section class="section demo-section" id="live-demo">
     <div class="container">
       <div class="section-label">Live Demo — Tata Motors EV Component Plant</div>
-      <h2 class="section-title">CNC-07 Morning Shift Story</h2>
+      <h2 class="section-title">CNC-01 Morning Shift Story</h2>
       <p class="section-desc">Watch the full ForgeMind AI workflow: Machine Memory → World Model → Decision Intelligence — driven by real industrial data.</p>
 
       <!-- Phase stepper -->
@@ -42,7 +42,7 @@ function buildDemoHTML() {
 
       <!-- Machine identity bar -->
       <div class="machine-bar glass-card" id="machine-bar">
-        <div class="mbar-item"><span class="mbar-label">Machine</span><span class="mbar-val" id="mb-machine">CNC-07</span></div>
+        <div class="mbar-item"><span class="mbar-label">Machine</span><span class="mbar-val" id="mb-machine">CNC-01</span></div>
         <div class="mbar-item"><span class="mbar-label">Plant</span><span class="mbar-val" id="mb-plant">—</span></div>
         <div class="mbar-item"><span class="mbar-label">Operator</span><span class="mbar-val" id="mb-operator">—</span></div>
         <div class="mbar-item"><span class="mbar-label">Shift Time</span><span class="mbar-val" id="mb-time">—</span></div>
@@ -112,7 +112,7 @@ function buildDemoHTML() {
             <div id="chat-log" class="chat-log">
               <div class="chat-bubble ai-bubble">
                 <strong>ForgeMind AI</strong><br/>
-                I've analysed CNC-07. Ask me why the vibration is increasing, what the RUL means, or why I recommend reducing RPM.
+                I've analysed CNC-01. Ask me why the vibration is increasing, what the RUL means, or why I recommend reducing RPM.
               </div>
             </div>
             <div class="chat-suggestions" id="chat-suggestions">
@@ -122,7 +122,7 @@ function buildDemoHTML() {
               <button class="chat-suggest-btn" data-q="What is causing the temperature rise?">Temperature cause?</button>
             </div>
             <div class="chat-input-row">
-              <input type="text" id="chat-input" class="chat-input" placeholder="Ask about CNC-07…" />
+              <input type="text" id="chat-input" class="chat-input" placeholder="Ask about CNC-01…" />
               <button id="chat-send" class="chat-send-btn">→</button>
             </div>
           </div>

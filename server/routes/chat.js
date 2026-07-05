@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { AI_CHAT_RESPONSES, DEMO_PHASES, WORLD_MODEL, DECISIONS } from '../data/storyData.js';
 
 const router = Router();
-let _currentPhaseIndex = 4;
+let _currentPhaseIndex = 0;
 export function setPhaseIndex(idx) { _currentPhaseIndex = idx; }
 
 // Keyword → response key mapping

@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 // Current active phase (kept in sync by server/index.js via setPhaseIndex)
-let currentPhaseIndex = 4; // Start at critical (phase 5) for max impact on load
+let currentPhaseIndex = 0; // Start at healthy (phase 1) to match OLED data
 
 // Called by server/index.js whenever the global phase changes
 export function setPhaseIndex(idx) {

@@ -160,8 +160,8 @@ function viewFactory() {
   const warns  = sensors.readings?.filter(r => r.status === 'warning') ?? [];
   const sensorRows = (sensors.readings ?? []).map(r => `
     <div class="ft-sensor-row">
-      <span class="fts-name">${r.sensor.replace(/_/g,' ')}</span>
-      ${sensorBar(r.value, { temperature:100, vibration:8, current:18, rpm:1600, bearing_health:100, lubrication:100, energy:10, noise:100 }[r.sensor] ?? 100, r.status)}
+      <span class="fts-name">${r.sensor === 'current' ? 'motor load' : r.sensor.replace(/_/g,' ')}</span>
+      ${sensorBar(r.value, { temperature:100, vibration:8, current:100, rpm:1600, bearing_health:100, lubrication:100, energy:10, noise:100 }[r.sensor] ?? 100, r.status)}
       <span class="fts-val" style="color:${statusColor(r.status)}">${r.value} ${r.unit}</span>
     </div>`).join('');
   const decActive = decisions.decisions_active;
@@ -186,11 +186,11 @@ function viewFactory() {
     <div class="factory-row">
       <div class="factory-left">
         <div class="panel glass-card">
-          <div class="panel-title">🏭 CNC-07 — ${machine.machine?.plant ?? 'Tata Motors EV Plant'}</div>
+          <div class="panel-title">🏭 CNC-01 — ${machine.machine?.plant ?? 'Tata Motors EV Plant'}</div>
           <div class="machine-status-block">
             ${healthRing(h)}
             <div class="msb-info">
-              <div class="msb-name">${machine.machine?.name ?? 'CNC Milling Machine #CNC-07'}</div>
+              <div class="msb-name">${machine.machine?.name ?? 'CNC Milling Machine #CNC-01'}</div>
               <div class="msb-line">${machine.machine?.location ?? 'Line 3 — Pune'}</div>
               <div class="msb-op">Operator: <strong>${machine.machine?.operator ?? 'Rahul Sharma'}</strong> · ${machine.machine?.shift ?? 'Morning Shift'}</div>
               <div class="msb-status" style="color:${statusColor(s)}">
@@ -242,7 +242,7 @@ function viewMachines() {
   const { machine = {}, sensors = {}, wm = {} } = liveData;
   const h = machine.health_score ?? 98;
   const MACHINES = [
-    { id:'CNC-07',  name:'CNC Milling Center 07',    health: h,   status: machine.status ?? 'ok', learning: 153, rul: wm.rul_hours ?? 'N/A', decision: machine.ai_decision ?? 'Continue', confidence: 96 },
+    { id:'CNC-01',  name:'CNC Milling Center 07',    health: h,   status: machine.status ?? 'ok', learning: 153, rul: wm.rul_hours ?? 'N/A', decision: machine.ai_decision ?? 'Continue', confidence: 96 },
     { id:'HYD-02',  name:'Hydraulic Press Line 2',   health: 91,  status: 'ok',      learning: 89,  rul: 'N/A', decision: 'Continue Production', confidence: 99 },
     { id:'CONV-05', name:'Conveyor Belt Assembly 05', health: 88,  status: 'ok',      learning: 44,  rul: 'N/A', decision: 'Continue Production', confidence: 97 },
     { id:'ROB-11',  name:'Welding Robot Station 11',  health: 54,  status: 'critical',learning: 201, rul: '12h', decision: 'Replace Joint Bearing', confidence: 91 },
@@ -269,7 +269,7 @@ function viewMachines() {
           <div class="mc-dec-label">Active Decision</div>
           <div class="mc-dec-val" style="color:${m.status === 'ok' ? '#777777' : statusColor(m.status)}">${m.decision}</div>
         </div>
-        ${m.id === 'CNC-07' ? `<div class="mc-live-badge">LIVE DATA</div>` : ''}
+        ${m.id === 'CNC-01' ? `<div class="mc-live-badge">LIVE DATA</div>` : ''}
       </div>`).join('')}
     </div>
   </div>`;
@@ -286,7 +286,7 @@ function viewMemory() {
     <div class="memory-hero glass-card">
       <div class="mh-icon">🧠</div>
       <div class="mh-text">
-        <div class="mh-title">Machine Memory Engine — CNC-07</div>
+        <div class="mh-title">Machine Memory Engine — CNC-01</div>
         <div class="mh-sub">Inspired by <strong style="color:#1a1a1a">Mind Robotics</strong> · Machines learn from experience instead of fixed programming</div>
       </div>
       <div class="mh-badge">${mem.total_cycles ?? 153} Learning Cycles</div>
@@ -295,7 +295,7 @@ function viewMemory() {
       <div class="panel glass-card">
         <div class="panel-title">🔧 Machine Identity & Experience</div>
         <div class="mem-table">
-          <div class="mt-row"><span class="mt-k">Machine ID</span><span class="mt-v">CNC-07</span></div>
+          <div class="mt-row"><span class="mt-k">Machine ID</span><span class="mt-v">CNC-01</span></div>
           <div class="mt-row"><span class="mt-k">Learning Cycles</span><span class="mt-v" style="color:#1a1a1a">${mem.total_cycles ?? 153}</span></div>
           <div class="mt-row"><span class="mt-k">Bearing Replaced</span><span class="mt-v">${mem.bearing_replaced ?? '28 Jan 2024'}</span></div>
           <div class="mt-row"><span class="mt-k">Bearing Life Hours</span><span class="mt-v">${mem.bearing_life_hours ?? 720} hrs</span></div>
@@ -367,7 +367,7 @@ function viewWorldModel() {
     <div class="wm-hero glass-card">
       <div class="wm-hero-inner">
         <div>
-          <div class="wm-hero-title">🌐 Industrial World Model — CNC-07</div>
+          <div class="wm-hero-title">🌐 Industrial World Model — CNC-01</div>
           <div class="wm-hero-sub">Inspired by <strong style="color:#4a4a8a">AMI / Yann LeCun</strong> · AI reasons about the physical world and predicts future machine states</div>
         </div>
         <div class="wm-hero-stats">
@@ -400,7 +400,7 @@ function viewWorldModel() {
 
         <div class="panel-title" style="margin-top:1.5rem">📊 Predicted State Evolution</div>
         <div class="state-evolution">
-          <div class="se-row"><span class="se-label">Machine</span><span class="se-val" style="color:#1a1a1a">CNC-07 · Active</span></div>
+          <div class="se-row"><span class="se-label">Machine</span><span class="se-val" style="color:#1a1a1a">CNC-01 · Active</span></div>
           <div class="se-arrow">↓ Heat Generation</div>
           <div class="se-row"><span class="se-label">Heat</span><span class="se-val" style="color:#b45a00">83°C → Est. 91°C in 1h</span></div>
           <div class="se-arrow">↓ Thermal Load</div>
@@ -442,7 +442,7 @@ function viewDecisions() {
   <div class="view-decisions">
     <div class="dec-hero glass-card">
       <div class="dh-left">
-        <div class="dh-title">⚡ Decision Intelligence Engine — CNC-07</div>
+        <div class="dh-title">⚡ Decision Intelligence Engine — CNC-01</div>
         <div class="dh-sub">Inspired by <strong style="color:#b45a00">Project Prometheus</strong> · AI evaluates multiple engineering actions and assists engineers in selecting the optimal decision</div>
       </div>
       <div class="dh-right">
@@ -516,7 +516,7 @@ function viewDecisions() {
 // ── VIEW 6: Fleet Learning ────────────────────────────────────────────────────
 function viewFleet() {
   const FLEET = [
-    { id:'CNC-07',  health:64, cycles:153, shared:12, plant:'Pune',    status:'critical' },
+    { id:'CNC-01',  health:64, cycles:153, shared:12, plant:'Pune',    status:'critical' },
     { id:'HYD-02',  health:91, cycles:89,  shared:8,  plant:'Pune',    status:'ok'       },
     { id:'CONV-05', health:88, cycles:44,  shared:3,  plant:'Pune',    status:'ok'       },
     { id:'ROB-11',  health:54, cycles:201, shared:18, plant:'Pune',    status:'critical' },
@@ -578,7 +578,7 @@ function viewFleet() {
     </div>
     <div class="fleet-insight glass-card">
       <div class="panel-title">🧬 Fleet-Wide Insight</div>
-      <p>CNC-07's current bearing degradation pattern has been <strong style="color:#b45a00">shared with CNC-03, HYD-02, and ROB-11</strong>. These machines now have pre-emptive warning thresholds adjusted. Fleet learning prevents the same failure from occurring twice across any machine in the network.</p>
+      <p>CNC-01's current bearing degradation pattern has been <strong style="color:#b45a00">shared with CNC-03, HYD-02, and ROB-11</strong>. These machines now have pre-emptive warning thresholds adjusted. Fleet learning prevents the same failure from occurring twice across any machine in the network.</p>
     </div>
   </div>`;
 }
@@ -591,7 +591,7 @@ function viewExplainAI() {
   return `
   <div class="view-explainai">
     <div class="xai-hero glass-card">
-      <div class="xai-title">📊 Explainable AI Dashboard — CNC-07</div>
+      <div class="xai-title">📊 Explainable AI Dashboard — CNC-01</div>
       <div class="xai-sub">Every recommendation includes confidence score, sensor contribution, reasoning chain, and predicted outcome</div>
     </div>
     <div class="xai-grid">
@@ -659,13 +659,13 @@ function viewCopilot() {
   return `
   <div class="view-copilot">
     <div class="copilot-header glass-card">
-      <div class="cop-title">💬 Engineering Copilot — CNC-07</div>
+      <div class="cop-title">💬 Engineering Copilot — CNC-01</div>
       <div class="cop-sub">Ask ForgeMind AI anything about this machine. Powered by Machine Memory + Industrial World Model.</div>
       <div class="cop-context">
         <span class="cop-ctx-item">🧠 153 learning cycles</span>
         <span class="cop-ctx-item">🌐 World Model active</span>
         <span class="cop-ctx-item">⚡ Phase ${currentPhase} data</span>
-        <span class="cop-ctx-item">📍 CNC-07 · Pune</span>
+        <span class="cop-ctx-item">📍 CNC-01 · Pune</span>
       </div>
     </div>
     <div class="copilot-body">
@@ -673,7 +673,7 @@ function viewCopilot() {
         <div id="copilot-log" class="copilot-log">
           <div class="cop-bubble cop-ai">
             <div class="cop-avatar">⬡</div>
-            <div class="cop-msg"><strong>ForgeMind AI</strong><br/>I've analysed CNC-07 across 153 learning cycles. The machine is currently in ${currentPhase >= 5 ? 'critical condition' : currentPhase >= 3 ? 'warning state' : 'normal operation'}.<br/><br/>I can explain my recommendations, walk through the physics chain, or help you plan the next maintenance action. What would you like to know?</div>
+            <div class="cop-msg"><strong>ForgeMind AI</strong><br/>I've analysed CNC-01 across 153 learning cycles. The machine is currently in ${currentPhase >= 5 ? 'critical condition' : currentPhase >= 3 ? 'warning state' : 'normal operation'}.<br/><br/>I can explain my recommendations, walk through the physics chain, or help you plan the next maintenance action. What would you like to know?</div>
           </div>
         </div>
         <div class="cop-suggestions">
@@ -686,7 +686,7 @@ function viewCopilot() {
         </div>
         <div class="cop-input-row">
           <div class="cop-input-wrap">
-            <input type="text" id="copilot-input" class="cop-input" placeholder="Ask about CNC-07 — bearing health, RUL, temperature, recommendations…" />
+            <input type="text" id="copilot-input" class="cop-input" placeholder="Ask about CNC-01 — bearing health, RUL, temperature, recommendations…" />
             <button id="cop-send" class="cop-send">Send →</button>
           </div>
         </div>

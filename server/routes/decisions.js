@@ -7,7 +7,7 @@ import { Router } from 'express';
 import { DECISIONS, DEMO_PHASES } from '../data/storyData.js';
 
 const router = Router();
-let _currentPhaseIndex = 4;
+let _currentPhaseIndex = 0;
 export function setPhaseIndex(idx) { _currentPhaseIndex = idx; }
 
 // In-memory action log (simulates database)
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
   // Only surface decisions when phase >= 5 (critical) — that's when Decision Intelligence fires
   const active = _currentPhaseIndex >= 4;
   res.json({
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     phase: phase.phase,
     decisions_active: active,
     evaluated_count: active ? DECISIONS.length : 0,
@@ -42,7 +42,7 @@ router.post('/approve', (req, res) => {
     id: `ACT-${Date.now()}`,
     timestamp: new Date().toISOString(),
     shift_time: DEMO_PHASES[_currentPhaseIndex].timestamp,
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     action: decision.action,
     rank: decision.rank,
     approved_by: approved_by ?? 'Rahul Sharma',
@@ -64,7 +64,7 @@ router.post('/approve', (req, res) => {
 // GET /api/decisions/history
 router.get('/history', (req, res) => {
   res.json({
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     total_actions: actionLog.length,
     actions: actionLog,
   });

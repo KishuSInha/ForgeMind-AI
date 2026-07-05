@@ -1,6 +1,6 @@
 /**
  * ForgeMind AI — Story-Driven Demo Data
- * Tata Motors EV Component Plant | CNC-07 | Morning Shift
+ * Tata Motors EV Component Plant | CNC-01 | Morning Shift
  *
  * This data tells a complete narrative:
  *   Phase 1 → Healthy      (09:00) normal operation
@@ -13,8 +13,8 @@
 
 // ── Machine identity ──────────────────────────────────────────────────────────
 export const MACHINE = {
-  id: 'CNC-07',
-  name: 'CNC Milling Machine #CNC-07',
+  id: 'CNC-01',
+  name: 'CNC Milling Machine #CNC-01',
   type: 'CNC Milling',
   plant: 'Tata Motors EV Component Plant',
   location: 'Line 3 — Pune',
@@ -27,9 +27,9 @@ export const MACHINE = {
 
 // ── Sensor thresholds ─────────────────────────────────────────────────────────
 export const THRESHOLDS = {
-  temperature:     { unit: '°C',   normal: [45, 65],  warning: [66, 80],  critical: 80  },
+  temperature:     { unit: '°C',   normal: [40, 65],  warning: [66, 80],  critical: 80  },
   vibration:       { unit: 'mm/s', normal: [1, 3],    warning: [3, 5],    critical: 5   },
-  current:         { unit: 'A',    normal: [8, 12],   warning: [12, 15],  critical: 15  },
+  current:         { unit: '%',    normal: [50, 75],  warning: [76, 90],  critical: 90  },
   rpm:             { unit: 'RPM',  normal: [1400,1500],warning: [1350,1400],critical: 1350},
   bearing_health:  { unit: '%',    normal: [90, 100],  warning: [70, 89],  critical: 70  },
   lubrication:     { unit: '%',    normal: [90, 100],  warning: [60, 89],  critical: 60  },
@@ -48,9 +48,9 @@ export const DEMO_PHASES = [
     narrative: 'Machine operating within all normal parameters. Bearing replaced 28 Jan. All systems nominal.',
     ai_decision: 'Continue Production',
     sensors: {
-      temperature:    52,
-      vibration:      1.9,
-      current:        9.8,
+      temperature:    42.6,
+      vibration:      1.25,
+      current:        68,
       rpm:            1450,
       bearing_health: 98,
       lubrication:    96,
@@ -67,9 +67,9 @@ export const DEMO_PHASES = [
     narrative: 'Machine Memory detects subtle temperature rise (+9°C) and vibration increase (+0.8 mm/s). Within normal range but trending upward. Logged against 153 historical cycles.',
     ai_decision: 'Continue — Monitor',
     sensors: {
-      temperature:    61,
-      vibration:      2.7,
-      current:        10.4,
+      temperature:    55,
+      vibration:      2.2,
+      current:        71,
       rpm:            1450,
       bearing_health: 94,
       lubrication:    93,
@@ -88,7 +88,7 @@ export const DEMO_PHASES = [
     sensors: {
       temperature:    68,
       vibration:      3.8,
-      current:        12.1,
+      current:        78,
       rpm:            1450,
       bearing_health: 88,
       lubrication:    82,
@@ -107,7 +107,7 @@ export const DEMO_PHASES = [
     sensors: {
       temperature:    75,
       vibration:      4.6,
-      current:        13.7,
+      current:        84,
       rpm:            1450,
       bearing_health: 79,
       lubrication:    73,
@@ -126,7 +126,7 @@ export const DEMO_PHASES = [
     sensors: {
       temperature:    83,
       vibration:      5.7,
-      current:        15.3,
+      current:        92,
       rpm:            1450,
       bearing_health: 64,
       lubrication:    61,
@@ -143,9 +143,9 @@ export const DEMO_PHASES = [
     narrative: 'RPM reduced to 1305. Machine Memory records intervention. Temperature stabilising. Vibration decreasing. Bearing health trend reversed. Production continues uninterrupted.',
     ai_decision: 'Action Applied — Monitoring Recovery',
     sensors: {
-      temperature:    71,
-      vibration:      3.1,
-      current:        11.8,
+      temperature:    62,
+      vibration:      2.8,
+      current:        72,
       rpm:            1305,
       bearing_health: 72,
       lubrication:    68,
@@ -185,12 +185,12 @@ export const WORLD_MODEL = {
     { step: 1, node: 'Temperature ↑',       value: '83°C',   status: 'critical' },
     { step: 2, node: 'Lubrication ↓',       value: '61%',    status: 'critical' },
     { step: 3, node: 'Bearing Friction ↑',  value: '+38%',   status: 'critical' },
-    { step: 4, node: 'Motor Load ↑',        value: '+21%',   status: 'warning'  },
-    { step: 5, node: 'Current ↑',           value: '15.3A',  status: 'critical' },
+    { step: 4, node: 'Frictional Load ↑',   value: '+24%',   status: 'warning'  },
+    { step: 5, node: 'Motor Load ↑',        value: '92%',    status: 'critical' },
     { step: 6, node: 'Energy ↑',            value: '7.8 kWh',status: 'warning'  },
     { step: 7, node: 'Bearing Failure',     value: '~86h',   status: 'critical' },
   ],
-  physics_reasoning: 'Bearing race wear causes micro-vibrations that degrade lubricant film. Reduced lubrication raises contact friction, increasing heat generation. Elevated temperature accelerates lubricant viscosity loss (Vogel equation), creating a positive feedback loop. Motor compensates with higher current draw (+21%), accelerating thermal degradation.',
+  physics_reasoning: 'Bearing race wear causes micro-vibrations that degrade lubricant film. Reduced lubrication raises contact friction, increasing heat generation. Elevated temperature accelerates lubricant viscosity loss (Vogel equation), creating a positive feedback loop. Motor load increases to 92%, accelerating thermal degradation.',
 };
 
 // ── Decision Intelligence options ─────────────────────────────────────────────
@@ -288,7 +288,7 @@ export const TIMELINE = [
 export const AI_CHAT_RESPONSES = {
   'why reduce rpm': {
     question: 'Why should I reduce RPM?',
-    answer: `Historical operating data from 153 learning cycles indicates that this vibration pattern (3.8–5.7 mm/s over 90 minutes) has previously resulted in bearing failure after approximately 80 operating hours.\n\nReducing spindle speed by 10% (1450 → 1305 RPM):\n• Lowers bearing contact load by ~18%\n• Decreases motor current by approximately 7% (15.3A → 14.2A)\n• Reduces heat generation, slowing lubricant degradation\n• Extends estimated bearing life by 84 hours\n• Avoids estimated ₹21,400 in unplanned downtime costs\n\nConfidence: 96% | Based on 153 historical cycles`,
+    answer: `Historical operating data from 153 learning cycles indicates that this vibration pattern (3.8–5.7 mm/s over 90 minutes) has previously resulted in bearing failure after approximately 80 operating hours.\n\nReducing spindle speed by 10% (1450 → 1305 RPM):\n• Lowers bearing contact load by ~18%\n• Decreases motor load by approximately 22% (92% → 72%)\n• Reduces heat generation, slowing lubricant degradation\n• Extends estimated bearing life by 84 hours\n• Avoids estimated ₹21,400 in unplanned downtime costs\n\nConfidence: 96% | Based on 153 historical cycles`,
   },
   'what is rul': {
     question: 'What is the Remaining Useful Life?',

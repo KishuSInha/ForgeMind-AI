@@ -21,7 +21,7 @@ app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }));
 app.use(express.json());
 
 // ── Shared phase state ──────────────────────────────────────────────────────
-let currentPhaseIndex = 4; // Start at phase 5 (critical — most impressive on load)
+let currentPhaseIndex = 0; // Start at phase 1 (healthy) to match OLED data
 
 function setAllPhases(idx) {
   currentPhaseIndex = idx;
@@ -134,7 +134,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api', (req, res) => {
   res.json({
     name: 'ForgeMind AI API',
-    description: 'Tata Motors EV Component Plant — CNC-07 Demo Backend',
+    description: 'Tata Motors EV Component Plant — CNC-01 Demo Backend',
     endpoints: {
       'GET  /api/health':                  'Server health + current phase',
       'GET  /api/stream':                  'SSE stream — live phase updates',
@@ -164,5 +164,5 @@ app.listen(PORT, () => {
   console.log(`📊 API overview:         http://localhost:${PORT}/api`);
   console.log(`🏥 Health check:         http://localhost:${PORT}/api/health`);
   console.log(`📡 SSE stream:           http://localhost:${PORT}/api/stream`);
-  console.log(`\n📍 Demo starts at Phase 5 (Critical — Decision Intelligence)\n`);
+  console.log(`\n📍 Demo starts at Phase 1 (Healthy — Monitoring)\n`);
 });

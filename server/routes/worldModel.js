@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { WORLD_MODEL, DEMO_PHASES } from '../data/storyData.js';
 
 const router = Router();
-let _currentPhaseIndex = 4;
+let _currentPhaseIndex = 0;
 export function setPhaseIndex(idx) { _currentPhaseIndex = idx; }
 
 // Scale RUL and failure probability based on current phase
@@ -23,7 +23,7 @@ const PHASE_WORLD_MODEL = [
 router.get('/', (req, res) => {
   const phaseWm = PHASE_WORLD_MODEL[_currentPhaseIndex];
   res.json({
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     phase: DEMO_PHASES[_currentPhaseIndex].phase,
     active: phaseWm.active,
     message: phaseWm.message,
@@ -40,7 +40,7 @@ router.get('/causal-chain', (req, res) => {
   // Reveal chain nodes progressively based on phase
   const visibleNodes = Math.min(phase + 1, WORLD_MODEL.causal_chain.length);
   res.json({
-    machine_id: 'CNC-07',
+    machine_id: 'CNC-01',
     causal_chain: WORLD_MODEL.causal_chain.slice(0, visibleNodes),
     chain_complete: visibleNodes === WORLD_MODEL.causal_chain.length,
     phase: DEMO_PHASES[_currentPhaseIndex].phase,
