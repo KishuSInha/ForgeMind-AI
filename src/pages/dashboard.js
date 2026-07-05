@@ -38,27 +38,6 @@ function buildSidebar() {
       </a>
       <a href="#" class="sidebar-link" data-view="admin_settings">
         <span class="sl-icon">⚙️</span><span class="sl-text">Platform Settings</span>
-      </a>
-
-      <div class="nav-group-label">Operations</div>
-      <a href="#" class="sidebar-link" data-view="factory">
-        <span class="sl-icon">🏭</span><span class="sl-text">Factory Command</span>
-        <span class="sl-badge sl-badge-red" id="badge-alerts">3</span>
-      </a>
-      <a href="#" class="sidebar-link" data-view="machines">
-        <span class="sl-icon">⚙️</span><span class="sl-text">Machine Intelligence</span>
-      </a>
-
-      <div class="nav-group-label">AI Engine</div>
-      <a href="#" class="sidebar-link" data-view="decisions">
-        <span class="sl-icon">⚡</span><span class="sl-text">Decision Intelligence</span>
-        <span class="sl-badge sl-badge-orange" id="badge-decisions">1</span>
-      </a>
-      <a href="#" class="sidebar-link" data-view="fleet">
-        <span class="sl-icon">🔗</span><span class="sl-text">Fleet Analytics</span>
-      </a>
-      <a href="#" class="sidebar-link" data-view="explainai">
-        <span class="sl-icon">📊</span><span class="sl-text">Explainable AI</span>
       </a>`;
   } else {
     nav.innerHTML = `
@@ -928,7 +907,7 @@ function viewAdminOverview() {
     </div>
 
     <div class="admin-grid">
-      <div class="panel glass-card">
+      <div class="panel glass-card" style="grid-column: 1 / -1;">
         <div class="panel-title">🏭 Fleet Health Summary</div>
         <div class="admin-fleet-table">
           <div class="aft-header"><span>Machine</span><span>Plant</span><span>Health</span><span>Status</span><span>RUL</span><span>Last Action</span></div>
