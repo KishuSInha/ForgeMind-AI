@@ -6,7 +6,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import machineRouter from './routes/machine.js';
+import machineRouter, { setPhaseIndex as setMachinePhase } from './routes/machine.js';
 import sensorsRouter, { setPhaseIndex as setSensorsPhase } from './routes/sensors.js';
 import worldModelRouter, { setPhaseIndex as setWmPhase } from './routes/worldModel.js';
 import decisionsRouter, { setPhaseIndex as setDecisionsPhase } from './routes/decisions.js';
@@ -25,6 +25,7 @@ let currentPhaseIndex = 4; // Start at phase 5 (critical — most impressive on 
 
 function setAllPhases(idx) {
   currentPhaseIndex = idx;
+  setMachinePhase(idx);
   setSensorsPhase(idx);
   setWmPhase(idx);
   setDecisionsPhase(idx);

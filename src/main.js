@@ -4,8 +4,10 @@
 import './styles.css';
 import { initHeroScene } from './three-scene.js';
 import { initApp } from './app.js';
+import { initDemo } from './demo.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initHeroScene();
   initApp();
+  initDemo();
 });

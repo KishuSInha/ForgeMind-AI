@@ -26,8 +26,6 @@ export function initHeroScene() {
   // ── Materials — pure white/grey palette ───────────────────────────────────
   const matBright  = () => new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 });
   const matMid     = () => new THREE.MeshBasicMaterial({ color: 0xdddddd, wireframe: true, transparent: true, opacity: 0.10 });
-  const matDim     = () => new THREE.MeshBasicMaterial({ color: 0xaaaaaa, wireframe: true, transparent: true, opacity: 0.06 });
-  const matLine    = () => new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
 
   // ── Primary: large rotating icosphere ─────────────────────────────────────
   const sphereGeo  = new THREE.IcosahedronGeometry(28, 2);
@@ -155,13 +153,11 @@ export function initHeroScene() {
   scene.add(new THREE.LineSegments(lineGeo, lineMat));
 
   // ── Scroll-driven 3D animation state ─────────────────────────────────────
-  let scrollProgress = 0;
-
   ScrollTrigger.create({
     trigger: 'body',
     start: 'top top',
     end: 'bottom bottom',
-    onUpdate: self => { scrollProgress = self.progress; }
+    onUpdate: () => {} // keeps trigger alive for scrub targets
   });
 
   // Animate main scene objects on scroll
@@ -197,11 +193,11 @@ export function initHeroScene() {
     scrollTrigger: { trigger: 'body', start: '10% top', end: '40% top', scrub: 1 }
   });
 
-  gsap.to(gridGroup.material, {
+  gsap.to(gridMat, {
     // grid fades as user scrolls past hero
     opacity: 0, ease: 'none',
     scrollTrigger: { trigger: 'body', start: 'top top', end: '20% top', scrub: 1 }
-  }).then?.(); // silently fail if not chainable
+  });
 
   // Particles drift upward on scroll
   gsap.to(particles.position, {

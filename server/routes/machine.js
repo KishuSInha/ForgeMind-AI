@@ -9,8 +9,13 @@ import {
 
 const router = Router();
 
-// Current active phase (server-side state, cycles through demo)
+// Current active phase (kept in sync by server/index.js via setPhaseIndex)
 let currentPhaseIndex = 4; // Start at critical (phase 5) for max impact on load
+
+// Called by server/index.js whenever the global phase changes
+export function setPhaseIndex(idx) {
+  currentPhaseIndex = idx;
+}
 
 // GET /api/machine — machine identity + current snapshot
 router.get('/', (req, res) => {
