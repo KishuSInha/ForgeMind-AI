@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForgeMind AI — Presentation Script</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #1a1a2e;
+      font-size: 11pt;
+      line-height: 1.7;
+    }
+
+    /* ── Cover Page ── */
+    .cover {
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0d1b2a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 60% 40%, rgba(99,102,241,0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(16,185,129,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .cover-badge {
+      background: rgba(99,102,241,0.2);
+      border: 1px solid rgba(99,102,241,0.5);
+      color: #a5b4fc;
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-size: 9pt;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .cover-logo {
+      font-size: 56pt;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .cover-logo .ai-badge {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      font-size: 22pt;
+      padding: 2px 12px;
+      border-radius: 8px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .cover-tagline {
+      color: rgba(255,255,255,0.55);
+      font-size: 13pt;
+      font-weight: 400;
+      margin-bottom: 48px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .cover-divider {
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #10b981);
+      margin: 0 auto 40px;
+    }
+
+    .cover-doc-title {
+      color: #ffffff;
+      font-size: 18pt;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .cover-doc-sub {
+      color: rgba(255,255,255,0.45);
+      font-size: 10pt;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .cover-team-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 28px 40px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      min-width: 420px;
+    }
+
+    .cover-team-label {
+      color: rgba(255,255,255,0.4);
+      font-size: 8pt;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .cover-team-name {
+      color: #10b981;
+      font-size: 20pt;
+      font-weight: 800;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+
+    .cover-presenter {
+      color: #ffffff;
+      font-size: 11pt;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .cover-institute {
+      color: rgba(255,255,255,0.5);
+      font-size: 9pt;
+    }
+
+    .cover-members {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.55);
+      font-size: 9pt;
+    }
+
+    .cover-members span {
+      color: rgba(255,255,255,0.8);
+      font-weight: 500;
+    }
+
+    .cover-hackathon {
+      margin-top: 40px;
+      color: rgba(255,255,255,0.3);
+      font-size: 8.5pt;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .cover-hackathon strong { color: rgba(255,255,255,0.6); }
