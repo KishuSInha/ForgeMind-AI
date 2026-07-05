@@ -23,7 +23,7 @@
 
 /* ── Reset colors from global dark theme ── */
 .dash-body,
-.dash-body *:not(canvas) {
+.dash-body *:not(.sidebar):not(.sidebar *):not(canvas) {
   color: var(--db-text);
 }
 
