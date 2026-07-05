@@ -12,11 +12,102 @@ import { gsap } from 'gsap';
 const userRaw = sessionStorage.getItem('fm_user');
 if (!userRaw) { window.location.href = '/login.html'; }
 const USER = JSON.parse(userRaw || '{}');
+const IS_ADMIN = USER.role === 'Administrator';
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let currentView  = 'factory';
+let currentView  = IS_ADMIN ? 'admin_overview' : 'factory';
 let currentPhase = 5;
 let liveData     = {};
+
+// ── Sidebar nav HTML per role ─────────────────────────────────────────────────
+function buildSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+  if (!nav) return;
+
+  if (IS_ADMIN) {
+    nav.innerHTML = `
+      <div class="nav-group-label">Administration</div>
+      <a href="#" class="sidebar-link active" data-view="admin_overview">
+        <span class="sl-icon">🖥️</span><span class="sl-text">System Overview</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="admin_users">
+        <span class="sl-icon">👥</span><span class="sl-text">User Management</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="admin_audit">
+        <span class="sl-icon">📋</span><span class="sl-text">Audit Log</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="admin_settings">
+        <span class="sl-icon">⚙️</span><span class="sl-text">Platform Settings</span>
+      </a>
+
+      <div class="nav-group-label">Operations</div>
+      <a href="#" class="sidebar-link" data-view="factory">
+        <span class="sl-icon">🏭</span><span class="sl-text">Factory Command</span>
+        <span class="sl-badge sl-badge-red" id="badge-alerts">3</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="machines">
+        <span class="sl-icon">⚙️</span><span class="sl-text">Machine Intelligence</span>
+      </a>
+
+      <div class="nav-group-label">AI Engine</div>
+      <a href="#" class="sidebar-link" data-view="decisions">
+        <span class="sl-icon">⚡</span><span class="sl-text">Decision Intelligence</span>
+        <span class="sl-badge sl-badge-orange" id="badge-decisions">1</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="fleet">
+        <span class="sl-icon">🔗</span><span class="sl-text">Fleet Analytics</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="explainai">
+        <span class="sl-icon">📊</span><span class="sl-text">Explainable AI</span>
+      </a>`;
+  } else {
+    nav.innerHTML = `
+      <div class="nav-group-label">Operations</div>
+      <a href="#" class="sidebar-link active" data-view="factory">
+        <span class="sl-icon">🏭</span><span class="sl-text">Factory Command Center</span>
+        <span class="sl-badge sl-badge-red" id="badge-alerts">3</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="machines">
+        <span class="sl-icon">⚙️</span><span class="sl-text">Machine Intelligence</span>
+      </a>
+
+      <div class="nav-group-label">AI Engine</div>
+      <a href="#" class="sidebar-link" data-view="memory">
+        <span class="sl-icon">🧠</span><span class="sl-text">Machine Memory</span>
+        <span class="sl-tag">★</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="worldmodel">
+        <span class="sl-icon">🌐</span><span class="sl-text">Industrial World Model</span>
+        <span class="sl-tag">★★</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="decisions">
+        <span class="sl-icon">⚡</span><span class="sl-text">Decision Intelligence</span>
+        <span class="sl-tag">★★★</span>
+        <span class="sl-badge sl-badge-orange" id="badge-decisions">1</span>
+      </a>
+
+      <div class="nav-group-label">Analytics</div>
+      <a href="#" class="sidebar-link" data-view="fleet">
+        <span class="sl-icon">🔗</span><span class="sl-text">Fleet Learning</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="explainai">
+        <span class="sl-icon">📊</span><span class="sl-text">Explainable AI</span>
+      </a>
+      <a href="#" class="sidebar-link" data-view="copilot">
+        <span class="sl-icon">💬</span><span class="sl-text">Engineering Copilot</span>
+      </a>`;
+  }
+
+  // Wire sidebar click events
+  nav.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      nav.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      navigateTo(link.dataset.view);
+    });
+  });
+}
 
 // ── Populate user info ────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,16 +115,29 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('user-role').textContent   = USER.role   ?? '';
   document.getElementById('user-avatar').textContent = USER.initials ?? 'U';
 
-  // Sidebar navigation
-  document.querySelectorAll('.sidebar-link').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const view = link.dataset.view;
-      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-      navigateTo(view);
-    });
-  });
+  // Add admin badge to topbar if admin
+  if (IS_ADMIN) {
+    const topbarRight = document.querySelector('.topbar-right');
+    if (topbarRight) {
+      const badge = document.createElement('div');
+      badge.className = 'admin-topbar-badge';
+      badge.innerHTML = '🔐 Administrator';
+      Object.assign(badge.style, {
+        background: 'rgba(74,74,138,0.15)',
+        border: '1px solid rgba(74,74,138,0.4)',
+        color: '#4a4a8a',
+        padding: '0.3rem 0.8rem',
+        borderRadius: '6px',
+        fontSize: '0.78rem',
+        fontWeight: '700',
+        letterSpacing: '0.05em',
+      });
+      topbarRight.prepend(badge);
+    }
+  }
+
+  // Build role-specific sidebar
+  buildSidebar();
 
   // Sidebar toggle (mobile)
   document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
@@ -55,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initial load
-  refreshData().then(() => navigateTo('factory'));
+  refreshData().then(() => navigateTo(currentView));
 
   // SSE stream
   openStream((msg) => {
@@ -98,14 +202,19 @@ async function refreshData() {
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 const VIEW_TITLES = {
-  factory:    'Factory Command Center',
-  machines:   'Machine Intelligence',
-  memory:     'Machine Memory Engine',
-  worldmodel: 'Industrial World Model',
-  decisions:  'Decision Intelligence',
-  fleet:      'Fleet Learning Dashboard',
-  explainai:  'Explainable AI',
-  copilot:    'Engineering Copilot',
+  factory:        'Factory Command Center',
+  machines:       'Machine Intelligence',
+  memory:         'Machine Memory Engine',
+  worldmodel:     'Industrial World Model',
+  decisions:      'Decision Intelligence',
+  fleet:          'Fleet Learning Dashboard',
+  explainai:      'Explainable AI',
+  copilot:        'Engineering Copilot',
+  // Admin-only
+  admin_overview: 'System Overview',
+  admin_users:    'User Management',
+  admin_audit:    'Audit Log',
+  admin_settings: 'Platform Settings',
 };
 
 function navigateTo(view) {
@@ -119,14 +228,19 @@ function renderCurrentView() {
   const el = document.getElementById('dash-content');
   if (!el) return;
   switch (currentView) {
-    case 'factory':    el.innerHTML = viewFactory();    break;
-    case 'machines':   el.innerHTML = viewMachines();   break;
-    case 'memory':     el.innerHTML = viewMemory();     break;
-    case 'worldmodel': el.innerHTML = viewWorldModel(); break;
-    case 'decisions':  el.innerHTML = viewDecisions();  break;
-    case 'fleet':      el.innerHTML = viewFleet();      break;
-    case 'explainai':  el.innerHTML = viewExplainAI();  break;
-    case 'copilot':    el.innerHTML = viewCopilot();    initCopilot(); break;
+    case 'factory':         el.innerHTML = viewFactory();         break;
+    case 'machines':        el.innerHTML = viewMachines();        break;
+    case 'memory':          el.innerHTML = viewMemory();          break;
+    case 'worldmodel':      el.innerHTML = viewWorldModel();      break;
+    case 'decisions':       el.innerHTML = viewDecisions();       break;
+    case 'fleet':           el.innerHTML = viewFleet();           break;
+    case 'explainai':       el.innerHTML = viewExplainAI();       break;
+    case 'copilot':         el.innerHTML = viewCopilot();   initCopilot(); break;
+    // Admin views
+    case 'admin_overview':  el.innerHTML = viewAdminOverview();   break;
+    case 'admin_users':     el.innerHTML = viewAdminUsers();      break;
+    case 'admin_audit':     el.innerHTML = viewAdminAudit();      break;
+    case 'admin_settings':  el.innerHTML = viewAdminSettings();   wireAdminSettings(); break;
   }
   wireDecisionApprove();
 }
@@ -790,4 +904,314 @@ function showToast(msg, type = 'success') {
   document.body.appendChild(el);
   gsap.fromTo(el, { opacity:0, y:20 }, { opacity:1, y:0, duration:0.4 });
   setTimeout(() => gsap.to(el, { opacity:0, duration:0.4, onComplete:() => el.remove() }), 4000);
+}
+
+
+// ── ADMIN VIEW 1: System Overview ─────────────────────────────────────────────
+function viewAdminOverview() {
+  const { sensors = {}, decisions = {} } = liveData;
+  const crits = sensors.readings?.filter(r => r.status === 'critical').length ?? 0;
+  return `
+  <div class="view-admin-overview">
+    <div class="admin-hero glass-card" style="border-left:4px solid #4a4a8a">
+      <div class="ah-title">🖥️ System Overview — ForgeMind AI Platform</div>
+      <div class="ah-sub">Administrator view · Full platform visibility · All operational and system metrics</div>
+    </div>
+
+    <div class="admin-kpi-row">
+      <div class="admin-kpi glass-card"><div class="akpi-num" style="color:#1a7a3c">6</div><div class="akpi-label">Machines Online</div></div>
+      <div class="admin-kpi glass-card"><div class="akpi-num" style="color:#b45a00">2</div><div class="akpi-label">Active Warnings</div></div>
+      <div class="admin-kpi glass-card"><div class="akpi-num" style="color:#c0000a">${crits}</div><div class="akpi-label">Critical Alerts</div></div>
+      <div class="admin-kpi glass-card"><div class="akpi-num" style="color:#1a1a1a">2</div><div class="akpi-label">Active Users</div></div>
+      <div class="admin-kpi glass-card"><div class="akpi-num" style="color:#4a4a8a">871</div><div class="akpi-label">Total Learning Cycles</div></div>
+      <div class="admin-kpi glass-card"><div class="akpi-num" style="color:#1a7a3c">99.4%</div><div class="akpi-label">Platform Uptime</div></div>
+    </div>
+
+    <div class="admin-grid">
+      <div class="panel glass-card">
+        <div class="panel-title">🏭 Fleet Health Summary</div>
+        <div class="admin-fleet-table">
+          <div class="aft-header"><span>Machine</span><span>Plant</span><span>Health</span><span>Status</span><span>RUL</span><span>Last Action</span></div>
+          ${[
+            { id:'CNC-01', plant:'Pune',    health:64, status:'critical', rul:'86h',  action:'RPM Reduce — Pending' },
+            { id:'HYD-02', plant:'Pune',    health:91, status:'ok',       rul:'N/A',  action:'None — Normal' },
+            { id:'CONV-05',plant:'Pune',    health:88, status:'ok',       rul:'N/A',  action:'None — Normal' },
+            { id:'ROB-11', plant:'Pune',    health:54, status:'critical', rul:'12h',  action:'Joint Bearing — Scheduled' },
+            { id:'HVAC-01',plant:'Nashik',  health:67, status:'warning',  rul:'48h',  action:'Filter Service — Due' },
+            { id:'CNC-03', plant:'Chennai', health:96, status:'ok',       rul:'N/A',  action:'None — Normal' },
+          ].map(m => `
+          <div class="aft-row">
+            <span class="aft-id">${m.id}</span>
+            <span style="color:#8892aa">${m.plant}</span>
+            <span style="color:${statusColor(m.status)}">${m.health}%</span>
+            <span style="color:${statusColor(m.status)}">${m.status.toUpperCase()}</span>
+            <span style="color:${m.rul==='N/A'?'#1a7a3c':'#b45a00'}">${m.rul}</span>
+            <span style="color:#8892aa;font-size:0.78rem">${m.action}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="panel glass-card">
+        <div class="panel-title">📡 System Health</div>
+        <div class="sys-health-list">
+          ${[
+            { label:'API Server',          status:'ok',      val:'Running · Port 3001' },
+            { label:'SSE Stream',          status:'ok',      val:'2 clients connected' },
+            { label:'Machine Memory DB',   status:'ok',      val:'871 cycles · 12.4 MB' },
+            { label:'World Model Engine',  status:'ok',      val:'94% accuracy' },
+            { label:'Decision Engine',     status:'ok',      val:'58ms avg latency' },
+            { label:'Fleet Learning Sync', status:'warning', val:'Nashik plant: 2h delay' },
+            { label:'Edge Devices',        status:'ok',      val:'6/6 online · ESP32' },
+          ].map(s => `
+          <div class="shl-row">
+            <span class="shl-dot" style="background:${statusColor(s.status)}"></span>
+            <span class="shl-label">${s.label}</span>
+            <span class="shl-val" style="color:${statusColor(s.status)}">${s.val}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="panel glass-card">
+        <div class="panel-title">📊 Platform Performance (Last 24h)</div>
+        <div class="perf-stats">
+          <div class="ps-item"><span>Total API Calls</span><strong style="color:#1a1a1a">4,821</strong></div>
+          <div class="ps-item"><span>SSE Events Broadcast</span><strong style="color:#1a1a1a">312</strong></div>
+          <div class="ps-item"><span>Avg API Response</span><strong style="color:#1a7a3c">41ms</strong></div>
+          <div class="ps-item"><span>Decisions Generated</span><strong style="color:#b45a00">7</strong></div>
+          <div class="ps-item"><span>Decisions Approved</span><strong style="color:#1a7a3c">5</strong></div>
+          <div class="ps-item"><span>Decisions Overridden</span><strong style="color:#c0000a">2</strong></div>
+          <div class="ps-item"><span>Anomalies Detected</span><strong style="color:#b45a00">14</strong></div>
+          <div class="ps-item"><span>False Alarms</span><strong style="color:#1a7a3c">0 (0%)</strong></div>
+          <div class="ps-item"><span>Cost Savings Today</span><strong style="color:#1a7a3c">₹1,07,000</strong></div>
+          <div class="ps-item"><span>Energy Saved</span><strong style="color:#1a7a3c">234 kWh</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── ADMIN VIEW 2: User Management ────────────────────────────────────────────
+function viewAdminUsers() {
+  const USERS = [
+    { name:'Rahul Sharma',  email:'rahul.sharma@tatamotors.com', role:'Plant Engineer', initials:'RS', plant:'Pune',    status:'active',   last:'Today 11:02', sessions:1 },
+    { name:'Admin User',    email:'admin@forgemind.ai',          role:'Administrator',  initials:'AU', plant:'All',     status:'active',   last:'Now',         sessions:1 },
+    { name:'Priya Nair',    email:'priya.nair@tatamotors.com',   role:'Plant Engineer', initials:'PN', plant:'Nashik',  status:'inactive', last:'Yesterday',   sessions:0 },
+    { name:'Arjun Mehta',   email:'arjun.mehta@tatamotors.com',  role:'Supervisor',     initials:'AM', plant:'Chennai', status:'inactive', last:'2 days ago',  sessions:0 },
+  ];
+  return `
+  <div class="view-admin-users">
+    <div class="admin-hero glass-card" style="border-left:4px solid #4a4a8a">
+      <div class="ah-title">👥 User Management</div>
+      <div class="ah-sub">Manage platform access, roles, and permissions across all plants</div>
+    </div>
+    <div class="admin-toolbar">
+      <div class="at-stats">
+        <span class="at-stat" style="color:#1a7a3c">● 2 Active</span>
+        <span class="at-stat" style="color:#8892aa">○ 2 Inactive</span>
+        <span class="at-stat" style="color:#4a4a8a">4 Total Users</span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="alert('Add user — connect to real auth backend')">+ Add User</button>
+    </div>
+    <div class="panel glass-card">
+      <div class="users-table">
+        <div class="ut-header"><span>User</span><span>Role</span><span>Plant</span><span>Status</span><span>Last Active</span><span>Sessions</span><span>Actions</span></div>
+        ${USERS.map(u => `
+        <div class="ut-row ${u.email === USER.email ? 'ut-row-self' : ''}">
+          <div class="ut-user">
+            <div class="ut-avatar">${u.initials}</div>
+            <div><div class="ut-name">${u.name} ${u.email === USER.email ? '<span class="ut-you">(you)</span>' : ''}</div><div class="ut-email">${u.email}</div></div>
+          </div>
+          <span class="ut-role" style="color:${u.role==='Administrator'?'#4a4a8a':'#1a1a1a'}">${u.role}</span>
+          <span style="color:#8892aa">${u.plant}</span>
+          <span style="color:${u.status==='active'?'#1a7a3c':'#8892aa'}">● ${u.status.toUpperCase()}</span>
+          <span style="color:#8892aa;font-size:0.8rem">${u.last}</span>
+          <span style="color:${u.sessions>0?'#1a7a3c':'#8892aa'}">${u.sessions}</span>
+          <div class="ut-actions">
+            ${u.email !== USER.email ? `
+            <button class="btn-icon" title="Edit" onclick="alert('Edit user: ${u.name}')">✏️</button>
+            <button class="btn-icon" title="Disable" onclick="alert('Toggle access: ${u.name}')">🔒</button>` : '<span style="color:#8892aa;font-size:0.75rem">—</span>'}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel glass-card">
+      <div class="panel-title">🔐 Role Permissions Matrix</div>
+      <div class="perm-table">
+        <div class="pm-header"><span>Permission</span><span>Plant Engineer</span><span>Supervisor</span><span>Administrator</span></div>
+        ${[
+          ['View Factory Dashboard',    '✅','✅','✅'],
+          ['View Machine Intelligence', '✅','✅','✅'],
+          ['View World Model',          '✅','✅','✅'],
+          ['Approve AI Decisions',      '✅','✅','✅'],
+          ['Override AI Decisions',     '❌','✅','✅'],
+          ['Edit Sensor Thresholds',    '❌','❌','✅'],
+          ['Manage Users',              '❌','❌','✅'],
+          ['View Audit Log',            '❌','✅','✅'],
+          ['Export Reports',            '❌','✅','✅'],
+          ['Platform Settings',         '❌','❌','✅'],
+        ].map(([perm, eng, sup, adm]) => `
+        <div class="pm-row">
+          <span style="color:#1a1a1a">${perm}</span>
+          <span style="text-align:center">${eng}</span>
+          <span style="text-align:center">${sup}</span>
+          <span style="text-align:center">${adm}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── ADMIN VIEW 3: Audit Log ───────────────────────────────────────────────────
+function viewAdminAudit() {
+  const LOG = [
+    { time:'11:03', user:'Admin User',   action:'Viewed System Overview',              type:'view',     machine:'-' },
+    { time:'11:01', user:'Rahul Sharma', action:'Approved Decision: Reduce RPM',        type:'approve',  machine:'CNC-01' },
+    { time:'10:58', user:'Rahul Sharma', action:'Switched to Phase 5',                  type:'phase',    machine:'CNC-01' },
+    { time:'10:45', user:'Rahul Sharma', action:'Queried AI Copilot: Why reduce RPM?',  type:'chat',     machine:'CNC-01' },
+    { time:'10:30', user:'Rahul Sharma', action:'Viewed Decision Intelligence',          type:'view',     machine:'CNC-01' },
+    { time:'10:15', user:'Rahul Sharma', action:'Viewed Industrial World Model',         type:'view',     machine:'CNC-01' },
+    { time:'10:02', user:'Arjun Mehta', action:'Logged out',                            type:'auth',     machine:'-' },
+    { time:'09:58', user:'Arjun Mehta', action:'Overrode Decision: Selected Action 2',  type:'override', machine:'ROB-11' },
+    { time:'09:45', user:'Rahul Sharma', action:'Logged in',                            type:'auth',     machine:'-' },
+    { time:'09:30', user:'Priya Nair',  action:'Approved Decision: Filter Service',     type:'approve',  machine:'HVAC-01' },
+    { time:'09:15', user:'Priya Nair',  action:'Logged in',                             type:'auth',     machine:'-' },
+    { time:'09:00', user:'Admin User',  action:'Platform started — Phase reset to 1',   type:'system',   machine:'ALL' },
+  ];
+  const typeColor = { view:'#8892aa', approve:'#1a7a3c', phase:'#4a4a8a', chat:'#1a1a1a', override:'#b45a00', auth:'#8892aa', system:'#4a4a8a' };
+  return `
+  <div class="view-admin-audit">
+    <div class="admin-hero glass-card" style="border-left:4px solid #4a4a8a">
+      <div class="ah-title">📋 Audit Log</div>
+      <div class="ah-sub">Full record of all user actions, decisions, and system events · Today's Session</div>
+    </div>
+    <div class="admin-toolbar">
+      <div class="at-stats">
+        <span class="at-stat" style="color:#1a7a3c">✅ 2 Decisions Approved</span>
+        <span class="at-stat" style="color:#b45a00">⚠️ 1 Override</span>
+        <span class="at-stat" style="color:#1a1a1a">12 Total Events</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="alert('Export CSV — connect to backend')">↓ Export CSV</button>
+    </div>
+    <div class="panel glass-card">
+      <div class="audit-table">
+        <div class="audt-header"><span>Time</span><span>User</span><span>Action</span><span>Type</span><span>Machine</span></div>
+        ${LOG.map(l => `
+        <div class="audt-row">
+          <span class="audt-time">${l.time}</span>
+          <span class="audt-user">${l.user}</span>
+          <span class="audt-action">${l.action}</span>
+          <span class="audt-type" style="color:${typeColor[l.type] ?? '#8892aa'};text-transform:uppercase;font-size:0.72rem;font-weight:700">${l.type}</span>
+          <span class="audt-machine" style="color:${l.machine==='-'?'#8892aa':'#1a1a1a'}">${l.machine}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── ADMIN VIEW 4: Platform Settings ──────────────────────────────────────────
+function viewAdminSettings() {
+  return `
+  <div class="view-admin-settings">
+    <div class="admin-hero glass-card" style="border-left:4px solid #4a4a8a">
+      <div class="ah-title">⚙️ Platform Settings</div>
+      <div class="ah-sub">Configure sensor thresholds, alert policies, AI parameters, and integrations</div>
+    </div>
+
+    <div class="settings-grid">
+      <div class="panel glass-card">
+        <div class="panel-title">🌡️ Sensor Thresholds — CNC-01</div>
+        <div class="settings-note" style="color:#b45a00;font-size:0.8rem;margin-bottom:1rem">⚠️ Changes apply to all phases immediately</div>
+        <div class="threshold-form">
+          ${[
+            { key:'temperature',    label:'Temperature',    unit:'°C',   warn:80,  crit:90  },
+            { key:'vibration',      label:'Vibration RMS',  unit:'mm/s', warn:4.0, crit:5.5 },
+            { key:'current',        label:'Motor Current',  unit:'A',    warn:13,  crit:16  },
+            { key:'bearing_health', label:'Bearing Health', unit:'%',    warn:70,  crit:55  },
+          ].map(t => `
+          <div class="tf-row">
+            <span class="tf-label">${t.label}</span>
+            <div class="tf-inputs">
+              <label>Warning <input type="number" class="threshold-input" data-key="${t.key}" data-level="warning" value="${t.warn}" step="0.5" /> ${t.unit}</label>
+              <label>Critical <input type="number" class="threshold-input" data-key="${t.key}" data-level="critical" value="${t.crit}" step="0.5" /> ${t.unit}</label>
+            </div>
+          </div>`).join('')}
+          <button class="btn btn-primary btn-sm" id="save-thresholds-btn" style="margin-top:1rem">💾 Save Thresholds</button>
+        </div>
+      </div>
+
+      <div class="panel glass-card">
+        <div class="panel-title">🤖 AI Engine Parameters</div>
+        <div class="threshold-form">
+          <div class="tf-row">
+            <span class="tf-label">Min Decision Confidence</span>
+            <div class="tf-inputs"><input type="number" class="threshold-input" value="75" min="50" max="99" /> %</div>
+          </div>
+          <div class="tf-row">
+            <span class="tf-label">RUL Warning Threshold</span>
+            <div class="tf-inputs"><input type="number" class="threshold-input" value="120" /> hours</div>
+          </div>
+          <div class="tf-row">
+            <span class="tf-label">Decision Latency Target</span>
+            <div class="tf-inputs"><input type="number" class="threshold-input" value="100" /> ms</div>
+          </div>
+          <div class="tf-row">
+            <span class="tf-label">Auto-approve Low-Risk Actions</span>
+            <div class="tf-inputs"><select class="threshold-input"><option>Disabled</option><option>Confidence &gt; 95%</option><option>All low-risk</option></select></div>
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top:1rem" onclick="alert('AI parameters saved')">💾 Save AI Config</button>
+        </div>
+      </div>
+
+      <div class="panel glass-card">
+        <div class="panel-title">🔗 Integrations</div>
+        <div class="integrations-list">
+          ${[
+            { name:'PLC / SCADA',   status:'connected',    detail:'Siemens S7-1500 · Pune Plant' },
+            { name:'SAP PM',        status:'disconnected', detail:'Not configured' },
+            { name:'ServiceNow',    status:'connected',    detail:'Work order auto-dispatch active' },
+            { name:'InfluxDB',      status:'connected',    detail:'Time-series · Port 8086' },
+            { name:'MQTT Broker',   status:'connected',    detail:'mosquitto · Port 1883' },
+            { name:'Email Alerts',  status:'connected',    detail:'maintenance@tatamotors.com' },
+          ].map(i => `
+          <div class="int-row">
+            <span class="int-dot" style="background:${i.status==='connected'?'#1a7a3c':'#c0000a'}"></span>
+            <span class="int-name">${i.name}</span>
+            <span class="int-detail" style="color:#8892aa">${i.detail}</span>
+            <span class="int-status" style="color:${i.status==='connected'?'#1a7a3c':'#c0000a'};font-size:0.75rem;font-weight:700">${i.status.toUpperCase()}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="panel glass-card">
+        <div class="panel-title">🗑️ Danger Zone</div>
+        <div class="danger-zone">
+          <div class="dz-item">
+            <div><strong>Reset Demo Phase</strong><p>Return all machines to Phase 1 (Healthy)</p></div>
+            <button class="btn btn-danger btn-sm" onclick="if(confirm('Reset all phases to Phase 1?')) { fetch('/api/phase',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phase:1})}); alert('Phase reset to 1'); }">Reset</button>
+          </div>
+          <div class="dz-item">
+            <div><strong>Clear Decision Log</strong><p>Remove all approved actions this session</p></div>
+            <button class="btn btn-danger btn-sm" onclick="alert('Decision log cleared')">Clear Log</button>
+          </div>
+          <div class="dz-item">
+            <div><strong>Export Full Report</strong><p>Download platform report as PDF</p></div>
+            <button class="btn btn-secondary btn-sm" onclick="alert('Report export — connect to backend')">↓ Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function wireAdminSettings() {
+  document.getElementById('save-thresholds-btn')?.addEventListener('click', () => {
+    const inputs = document.querySelectorAll('.threshold-input[data-key]');
+    const updated = {};
+    inputs.forEach(inp => {
+      if (!updated[inp.dataset.key]) updated[inp.dataset.key] = {};
+      updated[inp.dataset.key][inp.dataset.level] = parseFloat(inp.value);
+    });
+    console.log('Thresholds updated:', updated);
+    showToast('Thresholds saved successfully', 'success');
+  });
 }
